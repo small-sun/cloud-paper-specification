@@ -92,13 +92,27 @@
 
 后台接口如下：
 
-- /token/create
-- /token/destroy
-- /websocket/connect/:token
+- /token/create 向服务器申请创建一个演示间，获取一个token，然后马上建立ws连接
+  - method:GET
+  - 返回：
+    - token：一个16位随机字符串，每4个字母用一个`-`分割，因此字符串长度一共为16+3
+- /token/destroy/:token 销毁演示间
+  - method:GET
+  - :token:要销毁的token。仅有“发送绘制事件”权限的用户发送的该请求才会被处理
+- /websocket/connect/:token 建立ws连接，相当于加入演示间
 
-
-
-
+利用ws与向服务器发送的绘制事件数据结构如下：
+```js
+{
+  timestamp:Int //事件发送的时间戳
+  event_type:String[start|move|end] //发送的事件类型
+  x:Float //坐标发生的X轴百分比位置，一个小于1的数字，小数点保留后4位
+  y:Float //坐标发生的y轴百分比位置
+  pen_type:String //笔类型
+  pen_option:*    //笔刷的选项
+  [options]:{}    //该事件的其他描述
+}
+```
 
 
 
