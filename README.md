@@ -105,22 +105,15 @@
 ```js
 {
   timestamp:Int //事件发送的时间戳
-  event_type:String[start|move|end] //发送的事件类型
+  event_type:String[touchstart|touhcmove|touchend] //发送的事件类型
   x:Float //坐标发生的X轴百分比位置，一个小于1的数字，小数点保留后4位
   y:Float //坐标发生的y轴百分比位置
-  pen_type:String //笔类型
-  pen_option:*    //笔刷的选项
+  pen: {
+    type: String[pen|type]//笔类型
+    size: Number//笔的大小 px
+    [color=#000]:
+    [opacity=1.0]:
+  }
   [options]:{}    //该事件的其他描述
 }
 ```
-
-
-
-
-
-
-
-
-
-
-
