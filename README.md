@@ -92,14 +92,47 @@
 
 后台接口如下：
 
-- /token/create 向服务器申请创建一个演示间，获取一个token，然后马上建立ws连接
-  - method:GET
-  - 返回：
-    - token：一个16位随机字符串，每4个字母用一个`-`分割，因此字符串长度一共为16+3
-- /token/destroy/:token 销毁演示间
-  - method:GET
-  - :token:要销毁的token。仅有“发送绘制事件”权限的用户发送的该请求才会被处理
-- /websocket/connect/:token 建立ws连接，相当于加入演示间
+#### 创建房间
+
+- 接口URL：/token/create/:passwd？
+  - passwd：可选，为房间设置的密码
+- 调用方法：GET
+- 接口返回：
+  - token：请求创建后的房间token
+  - errcode
+  - errmsg
+
+此接口会设置客户端cookie，请确保ajax请求中`withCredentials`为`true`。
+
+请求此接口后，客户端可以直接向服务器通过`socket.io`发送websocket连接请求，服务器会监听`message`事件并广播。
+
+#### 进入房间
+
+- 接口URL：/websocket/connect/:token/:passwd？
+  - token：必选，要连接的房间token
+  - passwd：可选，进入房间的密码
+- 调用方法：GET
+- 接口返回：
+  - errcode
+  - errmsg
+  
+此接口会设置客户端cookie，请确保ajax请求中`withCredentials`为`true`。
+
+请求此接口后，客户端可以直接向服务器通过`socket.io`发送websocket连接请求，并监听服务器的`message`事件
+
+#### 获取房间列表
+
+- 接口URL：/websocket/getrooms
+- 调用方法：GET
+- 接口返回：
+  - rooms：数组，包含房间数据对象，对象属性如下：
+    - id：房间ID
+    - token：房间的token
+    - passwd：Boolean类型，房间是否有密码
+  - errcode
+  - errmsg
+
+### 其他接口
 
 利用ws与向服务器发送的绘制事件数据结构如下：
 ```js
